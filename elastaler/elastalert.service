@@ -1,0 +1,18 @@
+[Unit]
+Description=elastalert
+After=multi-user.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/home/admin/elastalert
+ExecStart=/usr/bin/python3 -m elastalert.elastalert --verbose --config /home/admin/elastalert/config.yaml
+
+StandardOutput=syslog
+StandardError=syslog
+KillSignal=SIGKILL
+PIDFile=/var/run/elastalert.pid
+
+[Install]
+WantedBy=multi-user.target

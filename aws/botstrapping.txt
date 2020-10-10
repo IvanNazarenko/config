@@ -1,0 +1,49 @@
+
+Botstraphing
+Advanced Configuration
+
+
+Ubuntu:
+
+#!/bin/bash
+echo "---------------START------------"
+apt -y update
+apt -y install apache2
+apt -y install awscli
+aws s3 sync s3://wayne-learning  /var/www/html
+systemctl enable apache2
+systemctl start apache2
+echo "UserData executed on $(date)" >> /var/www/html/log.txt
+echo "--------------FINISH------------"
+
+
+
+ip=`curl http://169.254.169.254/latest/meta-data/`
+echo "<html><body bgcolor=black><center><h1><p><font color=red>Web Server-$ip</h1></center></body><html>" > /var/www/html/index.html
+
+
+
+Amazon LINUX:
+
+#!/bin/bash
+echo "---------------START------------"
+yum -y update
+yum -y install httpd
+aws s3 sync s3://wayne-learning/web-vloks  /var/www/html
+service httpd start
+chkconfig httpd on 
+echo "UserData executed on $(date)" >> /var/www/html/log.txt
+echo "--------------FINISH------------"
+
+
+Amazaon LINUX 
+
+#!/bin/bash
+echo "---------------START------------"
+yum -y update
+yum -y install httpd
+echo "<html><body bgcolor=black><center><h1><p><font color=red>Web Server-1</h1></center></body><html>" > /var/www/html/index.html
+service httpd start
+chkconfig httpd on
+echo "UserData executed on $(date)" >> /var/www/html/log.txt
+echo "--------------FINISH------------"

@@ -1,0 +1,65 @@
+# Alert when there is a sudden spike in the volume of events
+
+# (Optional)
+# Elasticsearch host
+# es_host: elasticsearch.example.com
+
+# (Optional)
+# Elasticsearch port
+# es_port: 14900
+
+# (Optional) Connect with SSL to Elasticsearch
+#use_ssl: True
+
+# (Optional) basic-auth username and password for Elasticsearch
+#es_username: someusername
+#es_password: somepassword
+
+# (Required)
+# Rule name, must be unique
+name: Successfully auth outside Ukraine 
+
+# (Required)
+# Type of alert.
+# the spike rule type compares the number of events within two sliding windows to each other
+type: any
+# (Required)
+# Index to search, wildcard supported
+index: apps_logs-*
+
+##threshold_cur: 0
+#threshold_ref: 10
+#num_events: 5
+realert: 
+  minutes: 0
+
+reatimeframe:
+  seconds: 30
+
+
+
+filter:
+- query:
+    query_string:
+      query: "result_auth: successfully"
+# - term:
+#    appName: "auth-service"	      
+
+compare_key: geoip.country_name
+
+whitelist:
+ - "Ukraine"
+#- type:
+#    value: "some_doc_type"
+
+
+alert:
+- "telegram"
+
+alert_text: "Користувач {0} з {1}, {2} {3} успішно авторизувався\nЗверніть увагу на адресу {4}"
+alert_text_type: alert_text_only
+alert_text_args: ["username","geoip.country_name","geoip.city_name","geoip.region_name","remote-ip"]
+
+
+telegram_bot_token: " "
+telegram_room_id: " "

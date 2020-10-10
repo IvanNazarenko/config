@@ -1,0 +1,97 @@
+# Alert when the rate of events exceeds a threshold
+
+# (Optional)
+# Elasticsearch host
+es_host: 192.168.100.175
+
+# (Optional)
+# Elasticsearch port
+es_port: 9200
+
+# (OptionaL) Connect with SSL to Elasticsearch
+#use_ssl: True
+
+# (Optional) basic-auth username and password for Elasticsearch
+#es_username: someusername
+#es_password: somepassword
+
+# (Required)
+# Rule name, must be unique
+name: package-install
+
+# (Required)
+# Type of alert.
+# the frequency rule type alerts when num_events events occur with timeframe time
+type: any
+
+# (Required)
+# Index to search, wildcard supported
+index: wazuh-alerts-3.x-*
+
+# (Required, frequency specific)
+# Alert when this many documents matching the query occur within a timeframe
+#num_events: 1
+
+# (Required, frequency specific)
+# num_events must occur within this amount of time to trigger an alert
+#timeframe:
+#minutes: 1
+
+# (Required)
+# A list of Elasticsearch filters used for find events
+# These filters are joined with AND and nested in a filtered query
+# For more info: http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl.html
+filter:
+#- term:
+#     data.dpkg_status: " status installed"
+- query:
+    query_string:
+      query: "data.dpkg_status: status installed"
+#- query:
+#    query_string:
+#      query: "data.dpkg_status: remove"
+
+compare_key: data.package
+whitelist:
+  - "libpam-systemd"
+  - "libc-bin"
+  - "libllvm8"
+  - "systemd"
+  - "man-db"
+  - "libudev1"
+  - "unreadahead"
+  - "libdrm2"
+  - "systemd-sysv"
+  - "libgl1-messa-glx"
+  - "libdrm-amdgpu1"
+  - "initramfs-tools"
+  - "libsystemd0"
+  - "libnss-systemd"
+  - "udev"
+  - "libglx-mesa0"
+  - "libglapi-mesa"
+  - "libgl1-mesa-dri"
+  - "libllvm9"
+  - "libgl1-mesa-glx"
+  - "libdrm-radeon1"
+  - "libdrm-nouveau2"
+  - "libdrm-intel1"
+  - "ufw"
+  - "ureadahead"
+  - "libdrm-common"
+realert:
+  minutes: 1
+# (Required)
+# The alert is use when a match is found
+alert:
+- "telegram"
+
+# (required, email specific)
+# a list of email addresses to send alerts to
+alert_text: "Time: {0}\nAgent: {1}\nDescription: {2}\nPackage: {3}"
+alert_text_type: alert_text_only
+alert_text_args: ["timestamp","agent.name","rule.description","data.package"]
+
+
+telegram_bot_token: ""
+telegram_room_id: ""
